@@ -38,13 +38,14 @@ function rebuildWithDistributedParity(blocks) {
   const data = [];
   for (let i = 0; i < blocks[0].length; i++) {
     const row = blocks.map((x) => x[i]);
-    const x2bin = (x) => (x.startsWith("0x") ? hex2bin : str2bin)(x);
-    const parity = xor(row.map(x2bin));
-    console.log(parity);
-    console.log(str2bin("otorionralingologija"));
-    console.log(bin2str(parity));
+    const parityIndex = row.findIndex((x) => x.startsWith("0x"));
+    if (parityIndex !== -1) {
+      const x2bin = (x) => (x.startsWith("0x") ? hex2bin : str2bin)(x);
+      const rebuiltData = bin2str(xor(row.map(x2bin)));
+      row.splice(parityIndex, 1, rebuiltData);
+    }
+    data.push(...row);
   }
-  console.log(blocks);
   return data;
 }
 
@@ -83,7 +84,6 @@ function xor(strArr) {
   const maxLength = Math.max(...strArr.map((x) => x.split(" ").length));
   const zeroPad = (length) => "00000000 ".repeat(maxLength - length);
   const zeroPadded = strArr.map((x) => zeroPad(x.split(" ").length) + x);
-  console.log(zeroPadded);
 
   let parity = "";
   for (let i = 0; i < zeroPadded[0].length; i++) {
@@ -96,13 +96,9 @@ function xor(strArr) {
   return parity;
 }
 
-console.table(
-  rebuildWithDistributedParity(
-    stripWithDistributedParity(
-      "otorionralingologija test1 test2 test3 test4 test5 test6 test7 test8 test9".split(
-        " "
-      ),
-      4
-    ).slice(1)
-  )
+const a = stripWithDistributedParity(
+  "testaa test1 test2 test3 test4 test5 test6 test7 test8 test9".split(" "),
+  4
 );
+console.table(a);
+console.table(rebuildWithDistributedParity(a.slice(1)));
