@@ -4,7 +4,7 @@ import fs from "fs";
 import * as raid5 from "./raid5.js";
 
 const ACTION = {
-  STRIP: "strip",
+  STRIPE: "stripe",
   REBUILD: "rebuild",
 };
 
@@ -14,7 +14,7 @@ try {
   action = process.argv[2];
 
   switch (action) {
-    case ACTION.STRIP:
+    case ACTION.STRIPE:
       args = [parseInt(process.argv[3])];
       break;
 
@@ -25,15 +25,15 @@ try {
       throw new Error("invalid action");
   }
 } catch {
-  console.error("Usage: ./cli.js [strip|rebuild] [arguments] < [dataFile]");
+  console.error("Usage: ./cli.js [stripe|rebuild] [arguments] < [dataFile]");
   process.exit(1);
 }
 
 switch (action) {
-  case ACTION.STRIP:
+  case ACTION.STRIPE:
     console.log(
       raid5
-        .stripWithDistributedParity(data.split(" "), ...args)
+        .stripeWithDistributedParity(data.split(" "), ...args)
         .map((block) => block.join(" "))
         .join("\n")
     );

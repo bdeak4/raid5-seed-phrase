@@ -4,9 +4,9 @@ const PAD_STRING = "raid.js__pad";
 const BIN_PREFIX = "0b";
 const HEX_PREFIX = "0x";
 
-export function stripWithDistributedParity(data, blockCount) {
+export function stripeWithDistributedParity(data, blockCount) {
   if (blockCount < 3) {
-    throw new Error("not enough blocks to strip with distributed parity");
+    throw new Error("not enough blocks to stripe with distributed parity");
   }
 
   const dataCount = blockCount - 1;
