@@ -1,12 +1,12 @@
 const STRING_LEN = 20;
 const PREFIX_LEN = 2;
-const PAD_STRING = "raid.js__pad";
+const PAD_STRING = "raid5.js__pad";
 const BIN_PREFIX = "0b";
 const HEX_PREFIX = "0x";
 
 export function stripeWithDistributedParity(data, blockCount) {
   if (blockCount < 3) {
-    throw new Error("not enough blocks to stripe with distributed parity");
+    throw new Error("not enough blocks to stripe");
   }
 
   const dataCount = blockCount - 1;
@@ -35,6 +35,13 @@ export function stripeWithDistributedParity(data, blockCount) {
 }
 
 export function rebuildWithDistributedParity(blocks) {
+  const blockCount = parseInt(blocks[0][0].split("/")[1]);
+  const hasAllBlocks = blockCount === blocks.length;
+
+  if (blockCount - blocks.length > 1) {
+    throw new Error("not enough blocks to rebuild");
+  }
+
   blocks.sort((a, b) => a[0].localeCompare(b[0]));
 
   let missingIndex = blocks.length;
@@ -51,13 +58,17 @@ export function rebuildWithDistributedParity(blocks) {
     const chunk = blocks.map((x) => x[i]);
 
     const parityIndex = chunk.findIndex((x) => x.startsWith("0x"));
-    if (parityIndex !== -1) {
+    if (parityIndex !== -1 && !hasAllBlocks) {
       const x2bin = (x) => (x.startsWith("0x") ? hex2bin : str2bin)(x);
       const rebuiltData = bin2str(xor(chunk.map(x2bin)));
       chunk.splice(missingIndex, 0, rebuiltData);
     }
 
-    data.push(...chunk.filter((x) => !x.startsWith("0x") && x !== PAD_STRING));
+    data.push(
+      ...chunk.filter(
+        (x) => x.length > 0 && !x.startsWith("0x") && x !== PAD_STRING
+      )
+    );
   }
   return data;
 }
