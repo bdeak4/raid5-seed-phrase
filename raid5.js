@@ -4,7 +4,7 @@ const PAD_STRING = "raid.js__pad";
 const BIN_PREFIX = "0b";
 const HEX_PREFIX = "0x";
 
-function stripWithDistributedParity(data, blockCount) {
+export function stripWithDistributedParity(data, blockCount) {
   if (blockCount < 3) {
     throw new Error("not enough blocks to strip with distributed parity");
   }
@@ -34,7 +34,7 @@ function stripWithDistributedParity(data, blockCount) {
   return blocks;
 }
 
-function rebuildWithDistributedParity(blocks) {
+export function rebuildWithDistributedParity(blocks) {
   blocks.sort((a, b) => a[0].localeCompare(b[0]));
 
   let missingIndex = blocks.length;
@@ -108,20 +108,3 @@ function xor(binArr) {
   }
   return BIN_PREFIX + parity;
 }
-
-// ---
-const a = stripWithDistributedParity(
-  "physical detect adapt cabbage robust hold seek deposit fiber about dynamic deliver need inhale slam record tired radar float erosion vivid breeze kangaroo trim ante roca".split(
-    " "
-  ),
-  4
-);
-const input = [a[0], a[2], a[3]];
-console.log(input);
-console.table(rebuildWithDistributedParity(input).join(" "));
-
-// const x2bin = (x) => (x.startsWith("0x") ? hex2bin : str2bin)(x);
-// console.log(
-//   JSON.stringify(bin2str(xor(["robust", "0x726F797F7A7B", "hold"].map(x2bin))))
-// );
-// , hex2bin("0x64171F16C13F")
