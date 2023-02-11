@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>raid5-seed-phrase</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css"
+    />
+  </head>
+  <body>
+    <h1>raid5-seed-phrase</h1>
+
+    <form action="">
+      <input type="radio" name="action" value="stripe" id="stripe" checked />
+      <label for="stripe">Stripe</label>
+      <input type="radio" name="action" value="rebuild" id="rebuild" />
+      <label for="rebuild">Rebuild</label>
+      <textarea name="data" placeholder="Data" required></textarea>
+      <input
+        type="number"
+        name="blockCount"
+        placeholder="Block count"
+        required
+      />
+      <button type="submit">Generate</button>
+    </form>
+
+    <dialog>
+      <header>Output</header>
+      <pre><code id="out">abc</code></pre>
+      <form method="dialog">
+        <button>Close</button>
+      </form>
+    </dialog>
+
+    <style>
+      [name="blockCount"] {
+        display: none;
+        float: right;
+        margin-right: 0;
+      }
+      #stripe:checked ~ [name="blockCount"] {
+        display: block;
+      }
+    </style>
+    <script type="module">
+      import * as raid5 from "./raid5.js";
+
+      const ACTION = {
+        STRIPE: "stripe",
+        REBUILD: "rebuild",
+      };
+
+      document.querySelector("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const action = e.target.action.value;
+        const data = e.target.data.value.trim();
+        const blockCount = parseInt(e.target.blockCount.value);
+
+        const out = document.querySelector("#out");
+        document.querySelector("dialog").showModal();
+
+        switch (action) {
+          case ACTION.STRIPE:
+            out.innerHTML = raid5
+              .stripeWithDistributedParity(data.split(" "), blockCount)
+              .map((block) => block.join(" "))
+              .join("\n");
+            break;
+
+          case ACTION.REBUILD:
+            out.innerHTML = raid5
+              .rebuildWithDistributedParity(
+                data.split("\n").map((x) => x.split(" "))
+              )
+              .join(" ");
+            break;
+        }
+      });
+    </script>
+  </body>
+</html>

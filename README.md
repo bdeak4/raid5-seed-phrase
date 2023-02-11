@@ -1,6 +1,6 @@
 # raid5-seed-phrase
 
-Protect your crypto seed phrase with the power of RAID5
+Protect your crypto seed phrase with the power of [RAID5](https://en.wikipedia.org/wiki/Standard_RAID_levels#RAID_5)
 
 ## CLI
 
@@ -24,4 +24,8 @@ Rebuild seed phrase from N-1 blocks:
 
 ## GUI
 
-todo
+```
+npx serve
+```
+
+Program available on <http://localhost:3000/gui>
