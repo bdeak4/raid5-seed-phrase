@@ -38,7 +38,7 @@ export function rebuildWithDistributedParity(blocks) {
   const blockCount = parseInt(blocks[0][0].split("/")[1]);
   const hasAllBlocks = blockCount === blocks.length;
 
-  if (blockCount - blocks.length > 1) {
+  if (blockCount < 3 || blockCount - blocks.length > 1) {
     throw new Error("not enough blocks to rebuild");
   }
 
@@ -107,7 +107,7 @@ function bin2hex(bin) {
     .replace(BIN_PREFIX, "")
     .match(/.{1,8}/g)
     .reduce(
-      (acc, char) => acc + parseInt(char, 2).toString(16).toUpperCase(),
+      (acc, char) => acc + parseInt(char, 2).toString(16).padStart(2, "0"),
       HEX_PREFIX
     );
 }
